@@ -1,0 +1,2 @@
+*/5 * * * * root /usr/sbin/networkdetail2db >/dev/null 2>&1
+12 3 * * * root /usr/sbin/networkdetailpurge >/dev/null 2>&1

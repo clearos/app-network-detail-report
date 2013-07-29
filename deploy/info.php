@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network_detail_report';
-$app['version'] = '1.0.0';
+$app['version'] = '1.4.70';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
@@ -32,9 +32,22 @@ $app['requires'] = array(
 
 $app['core_requires'] = array(
     'app-network-core >= 1:1.4.70',
-    'app-reports-core',
-    'app-reports-database-core',
+    'app-reports-core >= 1:1.4.70',
+    'app-reports-database-core >= 1:1.4.70',
     'pmacct',
+);
+
+
+$app['core_file_manifest'] = array(
+    'app-network-detail-report.cron' => array( 'target' => '/etc/cron.d/app-network-detail-report'),
+    'networkdetail2db' => array(
+        'target' => '/usr/sbin/networkdetail2db',
+        'mode' => '0755',
+    ),
+    'networkdetailpurge' => array(
+        'target' => '/usr/sbin/networkdetailpurge',
+        'mode' => '0755',
+    ),
 );
 
 $app['delete_dependency'] = array(
@@ -42,4 +55,3 @@ $app['delete_dependency'] = array(
     'app-network-device-report',
     'pmacct',
 );
-

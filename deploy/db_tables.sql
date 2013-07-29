@@ -16,5 +16,9 @@ create table network_detail (
 	PRIMARY KEY (id),
     INDEX(ip_src),
     INDEX(ip_dst),
+    INDEX(ip),
+    INDEX(username),
+    INDEX(device_type),
+    INDEX(device_vendor),
     INDEX(stamp_inserted)
 ) ENGINE=innodb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;

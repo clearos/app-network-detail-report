@@ -1,0 +1,38 @@
+#!/bin/sh
+
+REPORT_CONFIG="/etc/clearos/network_detail_report.conf"
+DBINFO="/var/clearos/system_database/reports"
+MYSQL="/usr/clearos/sandbox/usr/bin/mysql"
+
+# Check database status
+#----------------------
+
+[ -e /var/lib/system-mysql/mysql.sock ] || exit 0
+
+# Grab the number of records to keep
+#-----------------------------------
+
+RECORDS=`grep ^records $REPORT_CONFIG 2>/dev/null | sed 's/.*=//'`
+if [ -z "$RECORDS" ]; then
+	RECORDS=2000000
+fi
+
+# Grab database password
+#-----------------------
+
+DBPASS=`grep ^password $DBINFO 2>/dev/null | sed "s/^password[[:space:]]*=[[:space:]]*//"`
+
+if [ -z "$DBPASS" ]; then
+    echo "Unable to authenticate with database"
+    exit 1
+fi
+
+# Purge database
+#---------------
+
+$MYSQL -ureports -p"$DBPASS" -e "\
+DROP TABLE IF EXISTS network_detail_prune; \
+CREATE TABLE network_detail_prune SELECT * FROM network_detail ORDER BY stamp_inserted DESC LIMIT $RECORDS; \
+RENAME TABLE network_detail TO network_detail_old, network_detail_prune TO network_detail;  \
+DROP TABLE network_detail_old; \
+" reports

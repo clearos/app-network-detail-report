@@ -81,9 +81,7 @@ class Network_Detail_Report extends Database_Report
     // C O N S T A N T S
     ///////////////////////////////////////////////////////////////////////////////
 
-    // FIXME
-    // const DEFAULT_DB_CACHE_TIME = 1200;
-    const DEFAULT_DB_CACHE_TIME = 0;
+    const DEFAULT_DB_CACHE_TIME = 1200;
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -311,15 +309,16 @@ class Network_Detail_Report extends Database_Report
         // Create temporary tables
         //------------------------
 
-        $create_options['range'] = $range;
+        $options['range'] = $range;
 
+        $sql = array();
         $sql['table'] = 'upload';
         $sql['select'] = 'SUM(packets) AS packets, SUM(bytes)/1024/1024 AS size, ' . $item;
         $sql['from'] = 'network_detail';
         $sql['where'] = "ip_src != '' AND $item IS NOT NULL";
         $sql['group_by'] = $item;
 
-        $this->_create_temporary_table('network_detail', $sql, $create_options);
+        $this->_create_temporary_table('network_detail', $sql, $options);
 
         $sql = array();
         $sql['table'] = 'download';
@@ -328,7 +327,7 @@ class Network_Detail_Report extends Database_Report
         $sql['where'] = "ip_dst != '' AND $item IS NOT NULL";
         $sql['group_by'] = $item;
 
-        $this->_create_temporary_table('network_detail', $sql, $create_options);
+        $this->_create_temporary_table('network_detail', $sql, $options);
 
         // Get report data
         //----------------
