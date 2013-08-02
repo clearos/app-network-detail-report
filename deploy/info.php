@@ -39,6 +39,7 @@ $app['core_requires'] = array(
 
 
 $app['core_file_manifest'] = array(
+    'pmacctd.php'=> array('target' => '/var/clearos/base/daemon/pmacctd.php'),
     'app-network-detail-report.cron' => array( 'target' => '/etc/cron.d/app-network-detail-report'),
     'networkdetail2db' => array(
         'target' => '/usr/sbin/networkdetail2db',
@@ -47,6 +48,10 @@ $app['core_file_manifest'] = array(
     'networkdetailpurge' => array(
         'target' => '/usr/sbin/networkdetailpurge',
         'mode' => '0755',
+    ),
+    'network-configuration-event'=> array(
+        'target' => '/var/clearos/events/network_configuration/network_detail_report',
+        'mode' => '0755'
     ),
 );
 

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# Create report database
+#-----------------------
+
+[ -x /usr/sbin/initialize-report-tables ] && /usr/sbin/initialize-report-tables network_detail_report
+
+# Run auto configure
+#-------------------
+
+/usr/clearos/apps/network_detail_report/deploy/auto_configure
+
+# Set default start/boot
+#-----------------------
+
+logger -p local6.notice -t installer "app-network-detail-report-core - enabling network accounting server"
+chkconfig pmacctd on
+
+logger -p local6.notice -t installer "app-network-detail-report-core - starting network accounting server"
+service pmacctd start

@@ -40,8 +40,10 @@ mkdir -p -m 755 %{buildroot}/usr/clearos/apps/network_detail_report
 cp -r * %{buildroot}/usr/clearos/apps/network_detail_report/
 
 install -D -m 0644 packaging/app-network-detail-report.cron %{buildroot}/etc/cron.d/app-network-detail-report
+install -D -m 0755 packaging/network-configuration-event %{buildroot}/var/clearos/events/network_configuration/network_detail_report
 install -D -m 0755 packaging/networkdetail2db %{buildroot}/usr/sbin/networkdetail2db
 install -D -m 0755 packaging/networkdetailpurge %{buildroot}/usr/sbin/networkdetailpurge
+install -D -m 0644 packaging/pmacctd.php %{buildroot}/var/clearos/base/daemon/pmacctd.php
 
 %post
 logger -p local6.notice -t installer 'app-network-detail-report - installing'
@@ -85,5 +87,7 @@ exit 0
 /usr/clearos/apps/network_detail_report/language
 /usr/clearos/apps/network_detail_report/libraries
 /etc/cron.d/app-network-detail-report
+/var/clearos/events/network_configuration/network_detail_report
 /usr/sbin/networkdetail2db
 /usr/sbin/networkdetailpurge
+/var/clearos/base/daemon/pmacctd.php

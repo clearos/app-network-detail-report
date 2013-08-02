@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# Create report database
+#-----------------------
+
+[ -x /usr/sbin/initialize-report-tables ] && /usr/sbin/initialize-report-tables network_detail_report
+
+# Run auto configure
+#-------------------
+
+rm /etc/pmacct/pmacctd_*.conf
+
+/usr/clearos/apps/network_detail_report/deploy/auto_configure
+
+# Restart
+#--------
+
+ON_BOOT=`ls /etc/rc3.d/S*pmacctd 2>/dev/null`
+if [ -n "$ON_BOOT" ]; then
+    /sbin/service pmacctd restart >/dev/null 2>&1
+fi
