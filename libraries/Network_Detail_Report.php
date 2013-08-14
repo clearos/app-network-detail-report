@@ -512,8 +512,9 @@ sql_history_roundoff: mh
         $sql = array();
         $sql['select'] = "upload.$item as $item, upload.hostname as hostname, " .
             'upload.packets as upload_packets, upload.size as upload_size, ' .
-            'download.packets as download_packets, download.size as download_size';
+            'download.packets as download_packets, download.size as download_size ';
         $sql['from'] = 'upload';
+        $sql['order_by'] = 'download_size DESC';
         $sql['joins'] = "LEFT JOIN download ON upload.$item=download.$item";
 
         $entries = $this->_run_query('network_detail', $sql, $options);
@@ -720,7 +721,7 @@ sql_history_roundoff: mh
                 lang('network_upload_packets')
             ),
             'types' => array(
-                'string',
+                'ipv6',
                 'int',
                 'int',
                 'int',
