@@ -58,6 +58,7 @@ clearos_load_language('reports');
 use \clearos\apps\base\Daemon as Daemon;
 use \clearos\apps\base\File as File;
 use \clearos\apps\network\Iface_Manager as Iface_Manager;
+use \clearos\apps\network\Network as Network;
 use \clearos\apps\network\Network_Utils as Network_Utils;
 use \clearos\apps\network\Role as Role;
 use \clearos\apps\reports_database\Database_Report as Database_Report;
@@ -65,6 +66,7 @@ use \clearos\apps\reports_database\Database_Report as Database_Report;
 clearos_load_library('base/Daemon');
 clearos_load_library('base/File');
 clearos_load_library('network/Iface_Manager');
+clearos_load_library('network/Network');
 clearos_load_library('network/Network_Utils');
 clearos_load_library('network/Role');
 clearos_load_library('reports_database/Database_Report');
@@ -322,7 +324,7 @@ sql_history_roundoff: mh
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $ip = sprintf("%u", ip2long($ip)); // TODO: not IPv6 friendly
+        $ip = inet_pton($ip);
 
         $report_data = $this->_get_data_info('ips');
 
@@ -545,7 +547,6 @@ sql_history_roundoff: mh
         //----------------
 
         // SQL queries are cached, so we need a unique ID for the cache.
-
         $options['cache_id'] = $table;
 
         $sql = array();
@@ -634,7 +635,7 @@ sql_history_roundoff: mh
         // Get report data
         //----------------
 
-        $options['cache_id'] = $table;
+        $options['cache_id'] = $table . $item . $value;
 
         $sql = array();
         $sql['select'] = 'upload.stamp_inserted, ' .
@@ -671,110 +672,117 @@ sql_history_roundoff: mh
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        // Top users
-        //----------
+        $network = new Network();
 
-        $reports['top_users'] = array(
-            'app' => 'network_detail_report',
-            'title' => lang('reports_top_users'),
-            'api_data' => 'get_user_data',
-            'chart_type' => 'pie',
-            'format' => array(
-                'baseline_data_points' => 10,
-            ),
-            'headers' => array(
-                lang('base_username'),
-                lang('network_download_size'),
-                lang('network_download_packets'),
-                lang('network_upload_size'),
-                lang('network_upload_packets')
-            ),
-            'types' => array(
-                'string',
-                'int',
-                'int',
-                'int',
-                'int'
-            ),
-            'detail' => array(
-                '/app/network_detail_report/users/index/',
-                NULL,
-                NULL,
-                NULL 
-            )
-        );
+        $mode = $network->get_mode();
 
-        // Top IPs
-        //--------
+        if (!(($mode === Network::MODE_STANDALONE) || ($mode === Network::MODE_TRUSTED_STANDALONE))) {
 
-        $reports['top_ips'] = array(
-            'app' => 'network_detail_report',
-            'title' => lang('reports_top_ips'),
-            'api_data' => 'get_ip_data',
-            'chart_type' => 'pie',
-            'series_highlight' => 2,
-            'series_sort' => 'desc',
-            'format' => array(
-                'baseline_data_points' => 10,
-            ),
-            'headers' => array(
-                lang('network_ip'),
-                lang('network_hostname'),
-                lang('network_download_size'),
-                lang('network_download_packets'),
-                lang('network_upload_size'),
-                lang('network_upload_packets')
-            ),
-            'types' => array(
-                'ipv6',
-                'string',
-                'int',
-                'int',
-                'int',
-                'int'
-            ),
-            'detail' => array(
-                '/app/network_detail_report/ips/index/',
-                NULL,
-                NULL,
-                NULL 
-            ),
-        );
-
-        // Top device types
-        //-----------------
-
-        $reports['top_device_types'] = array(
-            'app' => 'network_detail_report',
-            'title' => lang('reports_top_device_types'),
-            'api_data' => 'get_device_type_data',
-            'chart_type' => 'pie',
-            'format' => array(
-                'baseline_data_points' => 10,
-            ),
-            'headers' => array(
-                lang('base_username'),
-                lang('network_download_size'),
-                lang('network_download_packets'),
-                lang('network_upload_size'),
-                lang('network_upload_packets')
-            ),
-            'types' => array(
-                'ipv6',
-                'int',
-                'int',
-                'int',
-                'int'
-            ),
-            'detail' => array(
-                '/app/network_detail_report/device_types/index/',
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                NULL 
-            )
-        );
+            // Top users
+            //----------
+    
+            $reports['top_users'] = array(
+                'app' => 'network_detail_report',
+                'title' => lang('reports_top_users'),
+                'api_data' => 'get_user_data',
+                'chart_type' => 'pie',
+                'format' => array(
+                    'baseline_data_points' => 10,
+                ),
+                'headers' => array(
+                    lang('base_username'),
+                    lang('network_download_size'),
+                    lang('network_download_packets'),
+                    lang('network_upload_size'),
+                    lang('network_upload_packets')
+                ),
+                'types' => array(
+                    'string',
+                    'int',
+                    'int',
+                    'int',
+                    'int'
+                ),
+                'detail' => array(
+                    '/app/network_detail_report/users/index/',
+                    NULL,
+                    NULL,
+                    NULL 
+                )
+            );
+    
+            // Top IPs
+            //--------
+    
+            $reports['top_ips'] = array(
+                'app' => 'network_detail_report',
+                'title' => lang('reports_top_ips'),
+                'api_data' => 'get_ip_data',
+                'chart_type' => 'pie',
+                'series_highlight' => 2,
+                'series_sort' => 'desc',
+                'format' => array(
+                    'baseline_data_points' => 10,
+                ),
+                'headers' => array(
+                    lang('network_ip'),
+                    lang('network_hostname'),
+                    lang('network_download_size'),
+                    lang('network_download_packets'),
+                    lang('network_upload_size'),
+                    lang('network_upload_packets')
+                ),
+                'types' => array(
+                    'ipv6',
+                    'string',
+                    'int',
+                    'int',
+                    'int',
+                    'int'
+                ),
+                'detail' => array(
+                    '/app/network_detail_report/ips/index/',
+                    NULL,
+                    NULL,
+                    NULL 
+                ),
+            );
+    
+            // Top device types
+            //-----------------
+    
+            $reports['top_device_types'] = array(
+                'app' => 'network_detail_report',
+                'title' => lang('reports_top_device_types'),
+                'api_data' => 'get_device_type_data',
+                'chart_type' => 'pie',
+                'format' => array(
+                    'baseline_data_points' => 10,
+                ),
+                'headers' => array(
+                    lang('base_username'),
+                    lang('network_download_size'),
+                    lang('network_download_packets'),
+                    lang('network_upload_size'),
+                    lang('network_upload_packets')
+                ),
+                'types' => array(
+                    'ipv6',
+                    'int',
+                    'int',
+                    'int',
+                    'int'
+                ),
+                'detail' => array(
+                    '/app/network_detail_report/device_types/index/',
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL 
+                )
+            );
+        }
 
         // Top external IPs
         //-----------------

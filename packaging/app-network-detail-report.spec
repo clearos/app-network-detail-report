@@ -14,7 +14,7 @@ Requires: app-network
 Requires: app-groups
 
 %description
-The Network Detail Report - a description goes here.
+The Network Detail Report provides size and packet information.
 
 %package core
 Summary: Network Detail Report - Core
@@ -27,7 +27,7 @@ Requires: app-reports-database-core >= 1:1.4.70
 Requires: pmacct
 
 %description core
-The Network Detail Report - a description goes here.
+The Network Detail Report provides size and packet information.
 
 This package provides the core API and libraries.
 
