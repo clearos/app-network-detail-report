@@ -156,8 +156,6 @@ class Network_Detail_Report extends Database_Report
         foreach ($details as $iface => $info) {
             if ($info['role'] == Role::ROLE_EXTERNAL) {
 
-                $external_ip = $info['address'];
-
                 // Write configlet
                 //----------------
 
@@ -174,8 +172,6 @@ daemonize: true
 post_tag: 1
 aggregate[inbound]: src_host
 aggregate[outbound]: dst_host
-aggregate_filter[inbound]: not host $external_ip
-aggregate_filter[outbound]: not host $external_ip
 plugins: mysql[inbound], mysql[outbound]
 sql_db: reports
 sql_host: 127.0.0.1
