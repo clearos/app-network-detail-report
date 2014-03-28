@@ -1,7 +1,7 @@
 
 Name: app-network-detail-report
 Epoch: 1
-Version: 1.5.22
+Version: 1.5.23
 Release: 1%{dist}
 Summary: Network Detail Report
 License: Proprietary
@@ -76,7 +76,6 @@ exit 0
 %defattr(-,root,root)
 /usr/clearos/apps/network_detail_report/controllers
 /usr/clearos/apps/network_detail_report/htdocs
-/usr/clearos/apps/network_detail_report/views
 
 %files core
 %defattr(-,root,root)

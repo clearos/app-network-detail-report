@@ -9,17 +9,39 @@ $bootstrap = getenv('CLEAROS_BOOTSTRAP') ? getenv('CLEAROS_BOOTSTRAP') : '/usr/c
 require_once $bootstrap . '/bootstrap.php';
 
 ///////////////////////////////////////////////////////////////////////////////
+// T R A N S L A T I O N S
+///////////////////////////////////////////////////////////////////////////////
+
+clearos_load_language('base');
+
+///////////////////////////////////////////////////////////////////////////////
 // D E P E N D E N C I E S
 ///////////////////////////////////////////////////////////////////////////////
 
 use \clearos\apps\network_detail_report\Network_Detail_Report as Network_Detail_Report;
+use \clearos\apps\base\Script as Script;
 
 clearos_load_library('network_detail_report/Network_Detail_Report');
+clearos_load_library('base/Script');
 
 ///////////////////////////////////////////////////////////////////////////////
 // M A I N
 ///////////////////////////////////////////////////////////////////////////////
 
+$script = new Script();
 $report = new Network_Detail_Report();
 
-$report->update_mappings();
+if ($script->lock() !== TRUE) {
+    echo lang('base_script_already_running') . "\n";
+    exit(0);
+} else {
+    try {
+        $report->update_mappings();
+        $script->unlock();
+        exit(0);
+    } catch (Exception $e) {
+        echo clearos_exception_message($e) . "\n";
+        $script->unlock();
+        exit(1);
+    }
+}
