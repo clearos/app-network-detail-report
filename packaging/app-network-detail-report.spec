@@ -1,7 +1,7 @@
 
 Name: app-network-detail-report
 Epoch: 1
-Version: 1.5.23
+Version: 1.5.24
 Release: 1%{dist}
 Summary: Network Detail Report
 License: Proprietary
