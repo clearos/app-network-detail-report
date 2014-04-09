@@ -183,6 +183,7 @@ sql_refresh_time: 90
 sql_optimize_clauses: true
 sql_history: 10m
 sql_history_roundoff: mh
+sql_locking_style: row
 ";
                 $file->add_lines($body);
             } else if (in_array($info['address'], $trusted_ips)) {
@@ -237,6 +238,7 @@ sql_refresh_time: 90
 sql_optimize_clauses: true
 sql_history: 10m 
 sql_history_roundoff: mh
+sql_locking_style: row
 ";
                 $file->add_lines($body);
             }

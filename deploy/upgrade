@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Run reconfiguration event
+#--------------------------
+
+/var/clearos/events/network_configuration/network_detail_report
