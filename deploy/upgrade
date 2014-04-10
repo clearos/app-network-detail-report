@@ -3,4 +3,4 @@
 # Run reconfiguration event
 #--------------------------
 
-/var/clearos/events/network_configuration/network_detail_report
+/var/clearos/events/network_configuration/network_detail_report >/dev/null 2>&1
