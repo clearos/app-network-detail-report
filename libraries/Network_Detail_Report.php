@@ -460,7 +460,7 @@ sql_locking_style: row
         // Get unprocessed IPs
         //--------------------
 
-        $tables = array('network_detail', 'network_detail_external');
+        $tables = array('network_detail');
 
         foreach ($tables as $table) { 
             $sql['select'] = 'DISTINCT ip_src,ip_dst';
