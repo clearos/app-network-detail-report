@@ -4,3 +4,13 @@
 #--------------------------
 
 /var/clearos/events/network_configuration/network_detail_report >/dev/null 2>&1
+
+# Purge old external IP data
+#---------------------------
+
+if [ ! -e /var/clearos/network_detail_report/purge_external ]; then
+    logger -p local6.notice -t installer "app-network-detail-report-core - purging expired external data"
+    /usr/sbin/networkdetailpurge all_external
+    touch /var/clearos/network_detail_report/purge_external
+    /sbin/service pmacctd restart >/dev/null 2>&1
+fi

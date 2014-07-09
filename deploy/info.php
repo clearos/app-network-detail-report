@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network_detail_report';
-$app['version'] = '1.5.26';
+$app['version'] = '1.5.27';
 $app['release'] = '1';
 $app['vendor'] = 'ClearCenter';
 $app['packager'] = 'ClearCenter';
@@ -37,6 +37,9 @@ $app['core_requires'] = array(
     'pmacct',
 );
 
+$app['core_directory_manifest'] = array(
+    '/var/clearos/network_detail_report' => array(),
+);
 
 $app['core_file_manifest'] = array(
     'pmacctd.php'=> array('target' => '/var/clearos/base/daemon/pmacctd.php'),

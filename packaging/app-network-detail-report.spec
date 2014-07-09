@@ -1,7 +1,7 @@
 
 Name: app-network-detail-report
 Epoch: 1
-Version: 1.5.26
+Version: 1.5.27
 Release: 1%{dist}
 Summary: Network Detail Report
 License: Proprietary
@@ -39,6 +39,7 @@ This package provides the core API and libraries.
 mkdir -p -m 755 %{buildroot}/usr/clearos/apps/network_detail_report
 cp -r * %{buildroot}/usr/clearos/apps/network_detail_report/
 
+install -d -m 0755 %{buildroot}/var/clearos/network_detail_report
 install -D -m 0644 packaging/app-network-detail-report.cron %{buildroot}/etc/cron.d/app-network-detail-report
 install -D -m 0755 packaging/network-configuration-event %{buildroot}/var/clearos/events/network_configuration/network_detail_report
 install -D -m 0755 packaging/networkdetail2db %{buildroot}/usr/sbin/networkdetail2db
@@ -81,6 +82,7 @@ exit 0
 %defattr(-,root,root)
 %exclude /usr/clearos/apps/network_detail_report/packaging
 %dir /usr/clearos/apps/network_detail_report
+%dir /var/clearos/network_detail_report
 /usr/clearos/apps/network_detail_report/deploy
 /usr/clearos/apps/network_detail_report/language
 /usr/clearos/apps/network_detail_report/libraries

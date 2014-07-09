@@ -17,6 +17,12 @@ if [ -z "$RECORDS" ]; then
 	RECORDS=2000000
 fi
 
+if [ "$1" == "all_external" ]; then
+    EXTERNAL_RECORDS=0
+elif [ -z "$EXTERNAL_RECORDS" ]; then
+    EXTERNAL_RECORDS=$RECORDS
+fi
+
 # Grab database password
 #-----------------------
 
@@ -35,4 +41,11 @@ DROP TABLE IF EXISTS network_detail_prune; \
 CREATE TABLE network_detail_prune SELECT * FROM network_detail ORDER BY stamp_inserted DESC LIMIT $RECORDS; \
 RENAME TABLE network_detail TO network_detail_old, network_detail_prune TO network_detail;  \
 DROP TABLE network_detail_old; \
+" reports
+
+$MYSQL -ureports -p"$DBPASS" -e "\
+DROP TABLE IF EXISTS network_detail_external_prune; \
+CREATE TABLE network_detail_external_prune SELECT * FROM network_detail_external ORDER BY stamp_inserted DESC LIMIT $EXTERNAL_RECORDS; \
+RENAME TABLE network_detail_external TO network_detail_external_old, network_detail_external_prune TO network_detail_external;  \
+DROP TABLE network_detail_external_old; \
 " reports

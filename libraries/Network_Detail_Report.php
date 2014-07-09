@@ -460,14 +460,17 @@ sql_locking_style: row
         // Get unprocessed IPs
         //--------------------
 
-        $tables = array('network_detail');
+        $sql_options['limit'] = 100000;
+        $sql_options['cache_time'] = 0;
+
+        $tables = array('network_detail', 'network_detail_external');
 
         foreach ($tables as $table) { 
             $sql['select'] = 'DISTINCT ip_src,ip_dst';
             $sql['from'] = $table;
-            $sql['where'] = '(ip_src = \'\' OR ip_dst = \'\')';
+            $sql['where'] = 'ip IS NULL';
 
-            $unmapped_list = $this->_run_query('network_detail', $sql);
+            $unmapped_list = $this->_run_query('network_detail', $sql, $sql_options);
 
             $ips = array();
 
@@ -527,7 +530,9 @@ sql_locking_style: row
 
         $sql = array();
         $sql['table'] = 'upload';
-        $sql['select'] = 'SUM(packets) AS packets, SUM(bytes)/1024/1024 AS size, MAX(hostname) as hostname, ' . $item;
+        // See TODO below
+        // $sql['select'] = 'SUM(packets) AS packets, SUM(bytes)/1024/1024 AS size, MAX(hostname) as hostname, ' . $item;
+        $sql['select'] = 'SUM(packets) AS packets, SUM(bytes)/1024/1024 AS size, MAX(hostname) as hostname, MAX(ip_src) as ip_src, ' . $item;
         $sql['from'] = $table;
         $sql['where'] = "ip_src != '' AND $item IS NOT NULL";
         $sql['group_by'] = $item;
@@ -536,7 +541,9 @@ sql_locking_style: row
 
         $sql = array();
         $sql['table'] = 'download';
-        $sql['select'] = 'SUM(packets) AS packets, SUM(bytes)/1024/1024 AS size, ' . $item;
+        // See TODO below
+        // $sql['select'] = 'SUM(packets) AS packets, SUM(bytes)/1024/1024 AS size, ' . $item;
+        $sql['select'] = 'SUM(packets) AS packets, SUM(bytes)/1024/1024 AS size, MAX(ip_dst) AS ip_dst, ' . $item;
         $sql['from'] = $table;
         $sql['where'] = "ip_dst != '' AND $item IS NOT NULL";
         $sql['group_by'] = $item;
@@ -550,7 +557,7 @@ sql_locking_style: row
         $options['cache_id'] = $table;
 
         $sql = array();
-        $sql['select'] = "upload.$item as $item, upload.hostname as hostname, " .
+        $sql['select'] = "upload.$item as $item, upload.ip_src, download.ip_dst, upload.hostname as hostname, " .
             'upload.packets as upload_packets, upload.size as upload_size, ' .
             'download.packets as download_packets, download.size as download_size ';
         $sql['from'] = 'upload';
@@ -564,8 +571,18 @@ sql_locking_style: row
 
         foreach ($entries as $entry) {
             if ($item === 'ip') {
+
+                // TODO: there is something weird going on.  Some IPv4 addresses are
+                // getting truncated.  Example: hex2bin(inet_ntop()) failed for cc1655 - 204.92.22.85
+                // The "92" in the IP address is disappearing -- cc1655 should be cc5c1655.  Why 92?
+
+                $ip_output = inet_ntop($entry[$item]);
+
+                if ($ip_output == FALSE)
+                    $ip_output = empty($entry['ip_src']) ? $entry['ip_dst'] : $entry['ip_src'];
+
                 $report_data[] = array(
-                    inet_ntop($entry[$item]),
+                    $ip_output,
                     $entry['hostname'],
                     (int) $entry['download_size'],
                     (int) $entry['download_packets'],
@@ -573,7 +590,6 @@ sql_locking_style: row
                     (int) $entry['upload_packets']
                 );
             } else {
-                $item_entry =
                 $report_data[] = array(
                     $entry[$item],
                     (int) $entry['download_size'],
