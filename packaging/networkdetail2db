@@ -32,7 +32,7 @@ $script = new Script();
 $report = new Network_Detail_Report();
 
 if ($script->lock() !== TRUE) {
-    echo lang('base_script_already_running') . "\n";
+    echo lang('base_software_already_running') . "\n";
     exit(0);
 } else {
     try {
