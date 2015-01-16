@@ -19,7 +19,7 @@ $app['description'] = lang('network_detail_report_app_description');
 
 $app['name'] = lang('network_detail_report_app_name');
 $app['category'] = lang('base_category_reports');
-$app['subcategory'] = lang('base_category_network');
+$app['subcategory'] = lang('base_subcategory_performance_and_resources');
 
 /////////////////////////////////////////////////////////////////////////////
 // Packaging
